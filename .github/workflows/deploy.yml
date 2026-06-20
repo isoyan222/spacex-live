@@ -11,13 +11,26 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Deploy via SCP
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: sv16317.xserver.jp
-          username: xs771078
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: 10022
-          source: "index.html,about.html,privacy.html,manifest.json,sitemap.xml,sw.js,favicon.jpg,favicon.svg,css/,js/,textures/"
-          target: /home/xs771078/spacex-live.com/public_html/spacex.zip/
-          overwrite: true
+      - name: Setup SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -p 10022 -T 30 sv16317.xserver.jp >> ~/.ssh/known_hosts 2>/dev/null || true
+
+      - name: Test SSH connection
+        run: |
+          ssh -p 10022 -o StrictHostKeyChecking=no -o ConnectTimeout=30 \
+            -i ~/.ssh/id_rsa \
+            xs771078@sv16317.xserver.jp "echo SSH_OK" || echo "SSH test failed"
+
+      - name: Deploy via rsync
+        run: |
+          rsync -avz --delete \
+            -e "ssh -p 10022 -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa" \
+            --exclude='.git' \
+            --exclude='.github' \
+            --exclude='deploy.ps1' \
+            --exclude='deploy.bat' \
+            --exclude='.gitignore' \
+            ./ xs771078@sv16317.xserver.jp:/home/xs771078/spacex-live.com/public_html/spacex.zip/
