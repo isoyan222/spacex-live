@@ -14,9 +14,9 @@ jobs:
       - name: Deploy via SCP
         uses: appleboy/scp-action@v0.1.7
         with:
-          host: ${{ secrets.FTP_SERVER }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
+          host: sv16317.xserver.jp
+          username: xs771078
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 10022
           source: "index.html,about.html,privacy.html,manifest.json,sitemap.xml,sw.js,favicon.jpg,favicon.svg,css/,js/,textures/"
           target: /home/xs771078/spacex-live.com/public_html/spacex.zip/
