@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SpaceX Live — リアルタイム宇宙ダッシュボード</title>
+  <!-- Google Search Console 所有権確認 -->
+  <meta name="google-site-verification" content="pV1tDki-RGkHYXTjACQdBgI8lq-5Cg0epvEQzLUYhwo" />
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZE2328KV44"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-ZE2328KV44');
+  </script>
+  <!-- SEO -->
+  <meta name="description" content="SpaceXのロケット打ち上げ・Starlink衛星・ISS・株価をリアルタイムで追跡できる日本語ダッシュボード">
+  <meta name="keywords" content="SpaceX,Starlink,ISS,ロケット,宇宙,SPCX,株価,打ち上げ">
+  <meta property="og:title" content="SpaceX Live — リアルタイム宇宙ダッシュボード">
+  <meta property="og:description" content="Starlink衛星6800機以上を3D地球儀でリアルタイム追跡。打ち上げカウントダウン・ISS・株価も">
+  <meta property="og:url" content="https://spacex-live.com">
+  <meta property="og:type" content="website">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css?v=27">
+  <!-- ファビコン -->
+  <link rel="icon" type="image/jpeg" href="favicon.jpg">
+  <link rel="shortcut icon" href="favicon.jpg">
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#020810">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="SpaceX Live">
+  <link rel="apple-touch-icon" href="favicon.jpg">
+</head>
+<body>
+
+<!-- ═══════════════ NAVBAR ═══════════════ -->
+<nav class="navbar">
+  <div class="nav-logo">SPACE<span class="accent">X</span><span class="live-dot">●</span></div>
+
+  <div class="nav-tabs" id="nav-tabs">
+    <button class="nav-tab active" data-tab="earth">🌍 地球</button>
+    <button class="nav-tab" data-tab="moon">🌙 月</button>
+    <button class="nav-tab" data-tab="mars">🔴 火星</button>
+    <button class="nav-tab" data-tab="starlink">🛰 Starlink</button>
+    <button class="nav-tab" data-tab="rockets">🚀 ロケット</button>
+    <button class="nav-tab" data-tab="stock">📈 株価</button>
+    <button class="nav-tab" data-tab="history">📜 歴史</button>
+  </div>
+
+  <div class="nav-right">
+    <div class="nav-ticker">
+      <div class="ticker-item">
+        <span class="t-sym">SPCX</span>
+        <span class="t-price" id="nt-spcx">$174.90</span>
+        <span class="t-chg positive" id="nt-spcx-chg">▲+1.20%</span>
+      </div>
+      <div class="ticker-item">
+        <span class="t-sym">TSLA</span>
+        <span class="t-price" id="nt-tsla">$312.40</span>
+      </div>
+      <div class="ticker-item">
+        <span class="t-sym">RKLB</span>
+        <span class="t-price" id="nt-rklb">$--</span>
+      </div>
+    </div>
+    <button class="hamburger" id="hamburger">☰</button>
+  </div>
+</nav>
+
+<!-- ═══════════════ MAIN LAYOUT ═══════════════ -->
+<div class="app-layout">
+
+  <!-- ── LEFT SIDEBAR ── -->
+  <div class="sidebar left-sidebar" id="left-sidebar">
+
+    <div class="sidebar-section">
+      <div class="s-title">ビュー</div>
+      <div class="view-btns" id="view-btns">
+        <button class="vbtn active" data-globe="earth">🌍 <span>地球（リアルタイム）</span></button>
+        <button class="vbtn" data-globe="moon">🌙 <span>月面</span></button>
+        <button class="vbtn" data-globe="mars">🔴 <span>火星</span></button>
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="s-title">データレイヤー</div>
+      <div class="layers">
+        <label class="layer-row">
+          <input type="checkbox" id="lyr-starlink" checked onchange="updateLayers()">
+          <span class="lyr-dot" style="--c:#00bfff"></span>
+          <span>Starlink衛星</span>
+          <span class="lyr-cnt" id="cnt-starlink"></span>
+        </label>
+        <label class="layer-row">
+          <input type="checkbox" id="lyr-launchpads" checked onchange="updateLayers()">
+          <span class="lyr-dot" style="--c:#ff6020"></span>
+          <span>射場</span>
+        </label>
+        <label class="layer-row">
+          <input type="checkbox" id="lyr-landpads" checked onchange="updateLayers()">
+          <span class="lyr-dot" style="--c:#00ff88"></span>
+          <span>着陸地点</span>
+        </label>
+        <label class="layer-row">
+          <input type="checkbox" id="lyr-ships" checked onchange="updateLayers()">
+          <span class="lyr-dot" style="--c:#b060ff"></span>
+          <span>回収船</span>
+        </label>
+        <label class="layer-row">
+          <input type="checkbox" id="lyr-arcs" onchange="updateLayers()">
+          <span class="lyr-dot" style="--c:#ffd700"></span>
+          <span>打ち上げ軌跡</span>
+        </label>
+      </div>
+    </div>
+
+    <div class="sidebar-section scrollable">
+      <div class="s-title">
+        次の打ち上げ
+        <span class="s-refresh" onclick="refreshLaunches()" title="更新">↺</span>
+      </div>
+      <div id="launches-list">
+        <div class="skel"></div>
+        <div class="skel"></div>
+        <div class="skel"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ── GLOBE CENTER ── -->
+  <div class="globe-center">
+    <div id="globe-mount"></div>
+
+    <!-- 宇宙の天体オーバーレイ（ビューに応じて JS で切り替え） -->
+    <div   id="space-sun"  class="space-obj sun-glow"></div>
+    <img   id="space-moon" class="space-obj" src="https://upload.wikimedia.org/wikipedia/commons/e/e1/FullMoon2010.jpg"          alt="月" title="🌙 月面ビューへ">
+    <img   id="space-mars" class="space-obj" src="https://upload.wikimedia.org/wikipedia/commons/0/02/OSIRIS_Mars_true_color.jpg" alt="火星" title="🔴 火星ビューへ">
+    <div   id="space-earth-dot" class="space-obj earth-from-mars" title="🌍 地球ビューへ"></div>
+
+    <!-- 打ち上げ生放送バナー（T-60分で自動表示） -->
+    <div id="live-banner" class="live-banner hidden">
+      <span class="lb-dot">●</span>
+      <div class="lb-info">
+        <div class="lb-name" id="lb-name">打ち上げ</div>
+        <div class="lb-time" id="lb-time">まもなく開始</div>
+      </div>
+      <a id="lb-link" class="lb-btn" href="https://www.youtube.com/@SpaceX" target="_blank" rel="noopener">
+        ▶ LIVE 配信を見る
+      </a>
+      <button class="lb-close" onclick="document.getElementById('live-banner').classList.add('hidden')">×</button>
+    </div>
+
+    <div class="globe-overlay-tl">
+      <div class="globe-label-box" id="globe-status">読み込み中...</div>
+    </div>
+
+    <div class="globe-overlay-tr">
+      <button class="ov-btn active" id="btn-rotate" onclick="toggleRotate()">⟳ 自動回転</button>
+      <button class="ov-btn" id="btn-fullscreen" onclick="toggleFullscreen()">⛶</button>
+    </div>
+
+    <div class="time-bar">
+      <button class="tb-btn" data-r="1h">1h</button>
+      <button class="tb-btn" data-r="6h">6h</button>
+      <button class="tb-btn active" data-r="7d">7d</button>
+      <button class="tb-btn" data-r="30d">30d</button>
+      <button class="tb-btn" data-r="all">全期間</button>
+    </div>
+
+    <div id="info-popup" class="info-popup hidden">
+      <button class="popup-close" onclick="closePopup()">×</button>
+      <div id="popup-body"></div>
+    </div>
+
+    <!-- ロケット詳細モーダル -->
+    <div id="rocket-detail-modal" class="sdm-backdrop hidden" onclick="RocketModal.closeBg(event)">
+      <div class="sdm-card">
+        <button class="sdm-close" onclick="RocketModal.close()">×</button>
+        <div class="rdm-hdr">
+          <div class="rdm-name" id="rdm-name"></div>
+          <span class="rc-status" id="rdm-status"></span>
+        </div>
+        <p class="rdm-desc" id="rdm-desc"></p>
+        <div class="rdm-trivia" id="rdm-trivia"></div>
+        <div class="rdm-stats" id="rdm-stats"></div>
+      </div>
+    </div>
+
+    <!-- ロケット比較オーバーレイ -->
+    <div id="rockets-overlay" class="content-overlay hidden">
+      <div class="co-header">
+        <h2 class="co-title">🚀 SpaceX ロケット</h2>
+        <button class="co-close" onclick="App._switchView('earth')">× 閉じる</button>
+      </div>
+      <div id="rockets-cards" class="rockets-grid"></div>
+      <div class="rockets-chart-wrap">
+        <div class="s-title" style="margin-bottom:8px">📏 ロケット高さ比較（単位: m）</div>
+        <canvas id="rockets-chart" width="800" height="160" style="width:100%;height:160px;display:block;"></canvas>
+      </div>
+
+      <!-- 🎬 着陸名場面アーカイブ -->
+      <div class="s-title" style="margin:20px 0 12px">🎬 名場面アーカイブ</div>
+      <div class="video-grid">
+        <div class="video-card">
+          <div class="vc-thumb" onclick="playVideo('ANv5UfZsvZQ',this)">
+            <img src="https://img.youtube.com/vi/ANv5UfZsvZQ/mqdefault.jpg" alt="Falcon 9 初着陸" loading="lazy">
+            <div class="vc-play">▶</div>
+          </div>
+          <div class="vc-info">
+            <div class="vc-title">Falcon 9 — 史上初の垂直着陸</div>
+            <div class="vc-sub">2015年12月21日 · CCAFS LC-40</div>
+          </div>
+        </div>
+        <div class="video-card">
+          <div class="vc-thumb" onclick="playVideo('wbSwFU6tY1c',this)">
+            <img src="https://img.youtube.com/vi/wbSwFU6tY1c/mqdefault.jpg" alt="Falcon Heavy 双子着陸" loading="lazy">
+            <div class="vc-play">▶</div>
+          </div>
+          <div class="vc-info">
+            <div class="vc-title">Falcon Heavy — 双子ブースター同時着陸</div>
+            <div class="vc-sub">2018年2月6日 · Tesla Roadster 打ち上げ</div>
+          </div>
+        </div>
+        <div class="video-card">
+          <div class="vc-thumb" onclick="playVideo('AXLlg9pzZ9M',this)">
+            <img src="https://img.youtube.com/vi/AXLlg9pzZ9M/mqdefault.jpg" alt="Starship IFT-5 Mechazilla キャッチ" loading="lazy">
+            <div class="vc-play">▶</div>
+          </div>
+          <div class="vc-info">
+            <div class="vc-title">Starship — Super Heavy を機械アームでキャッチ</div>
+            <div class="vc-sub">2024年10月13日 · IFT-5 ハイライト</div>
+          </div>
+        </div>
+        <div class="video-card">
+          <div class="vc-thumb" onclick="playVideo('_2W8q6_GW-c',this)">
+            <img src="https://img.youtube.com/vi/_2W8q6_GW-c/mqdefault.jpg" alt="Falcon 9 着陸コンピレーション" loading="lazy">
+            <div class="vc-play">▶</div>
+          </div>
+          <div class="vc-info">
+            <div class="vc-title">Falcon 9 — ドローン船着陸ベストシーン集</div>
+            <div class="vc-sub">SpaceX 再使用ロケットのハイライト</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 証券会社選択ポップアップ -->
+    <div id="broker-popup" class="broker-backdrop hidden" onclick="StockOverlay.closeBroker(event)">
+      <div class="broker-card">
+        <div class="broker-title" id="broker-title">証券会社を選んでください</div>
+        <div class="broker-sub">口座開設は無料・最短翌日から取引可能</div>
+        <div class="broker-btns" id="broker-btns"></div>
+        <button class="broker-cancel" onclick="StockOverlay.closeBrokerBtn()">キャンセル</button>
+      </div>
+    </div>
+
+    <!-- 株詳細モーダル（カード タップ/クリック時） -->
+    <div id="stock-detail-modal" class="sdm-backdrop hidden" onclick="StockOverlay.closeDetail(event)">
+      <div class="sdm-card">
+        <button class="sdm-close" onclick="StockOverlay.closeDetailBtn()">×</button>
+        <div class="sdm-hdr">
+          <div>
+            <div class="sdm-sym" id="sdm-sym"></div>
+            <div class="sdm-name" id="sdm-name"></div>
+            <div class="sdm-desc-badge" id="sdm-desc"></div>
+          </div>
+          <div class="sdm-price-block">
+            <div class="sdm-price" id="sdm-price"></div>
+            <div class="sdm-chg"   id="sdm-chg"></div>
+          </div>
+        </div>
+        <div class="sov-period-bar" id="sdm-periods"></div>
+        <canvas id="sdm-chart" class="sdm-canvas"></canvas>
+        <div class="sdm-stats-row" id="sdm-stats"></div>
+        <a class="sov-buy-btn sov-buy-spcx" id="sdm-buy-btn" href="#" target="_blank" rel="noopener noreferrer"></a>
+      </div>
+    </div>
+
+    <!-- 株価オーバーレイ -->
+    <div id="stock-overlay" class="content-overlay hidden">
+      <div class="co-header">
+        <h2 class="co-title">📈 SpaceX 関連株 — リアルタイム</h2>
+        <button class="co-close" onclick="App._switchView('earth')">× 閉じる</button>
+      </div>
+
+      <!-- SPCX メインセクション -->
+      <div class="sov-main">
+        <div class="sov-main-hdr">
+          <div>
+            <span class="sov-ticker">SPCX</span>
+            <span class="sov-name">SpaceX Inc. · NASDAQ · 上場 2026年6月12日</span>
+          </div>
+          <div class="sov-price-block">
+            <div class="sov-price" id="ov-spcx-price">$185.00</div>
+            <div class="stock-chg positive" id="ov-spcx-chg">▲ +$2.08 (+1.20%)</div>
+          </div>
+        </div>
+        <div class="sov-period-bar" id="sov-periods">
+          <button class="sov-period active" data-sym="SPCX" data-r="5d">5日</button>
+          <button class="sov-period" data-sym="SPCX" data-r="1mo">1ヶ月</button>
+          <button class="sov-period" data-sym="SPCX" data-r="3mo">3ヶ月</button>
+          <button class="sov-period" data-sym="SPCX" data-r="1y">1年</button>
+        </div>
+        <canvas id="spcx-big-chart" class="sov-big-canvas"></canvas>
+        <div class="sov-stats-row">
+          <div class="sov-stat"><div class="sov-sv" id="ov-high">--</div><div class="sov-sl">高値（年初来）</div></div>
+          <div class="sov-stat"><div class="sov-sv" id="ov-low">--</div><div class="sov-sl">安値（年初来）</div></div>
+          <div class="sov-stat"><div class="sov-sv" id="ov-cap">$1.75兆</div><div class="sov-sl">時価総額</div></div>
+          <div class="sov-stat"><div class="sov-sv" id="ov-ipo">$135</div><div class="sov-sl">IPO価格</div></div>
+          <div class="sov-stat"><div class="sov-sv green" id="ov-ipo-ret">--</div><div class="sov-sl">IPO比リターン</div></div>
+        </div>
+        <button id="spcx-buy-btn" class="sov-buy-btn sov-buy-spcx" onclick="StockOverlay.openBroker('SPCX')">SPCX の株を買う</button>
+      </div>
+
+      <!-- 関連株グリッド -->
+      <div class="sov-section-title">関連株</div>
+      <div class="sov-related-grid" id="sov-related-grid">
+        <!-- JS で生成 -->
+      </div>
+    </div>
+
+    <!-- 歴史タイムラインオーバーレイ -->
+    <div id="history-overlay" class="content-overlay hidden">
+      <div class="co-header">
+        <h2 class="co-title">📜 SpaceX ヒストリー</h2>
+        <button class="co-close" onclick="App._switchView('earth')">× 閉じる</button>
+      </div>
+      <div id="history-timeline" class="history-timeline"></div>
+    </div>
+  </div>
+
+  <!-- ── RIGHT SIDEBAR（6タブ） ── -->
+  <div class="sidebar right-sidebar" id="right-sidebar">
+
+    <!-- タブバー -->
+    <div class="rtab-bar">
+      <button class="rtab active" data-p="stats"    title="統計・株価">📊</button>
+      <button class="rtab"        data-p="launches" title="打ち上げ">🚀</button>
+      <button class="rtab"        data-p="crew"     title="クルー">👨‍🚀</button>
+      <button class="rtab"        data-p="iss"      title="ISSトラッカー">🛸</button>
+      <button class="rtab"        data-p="location" title="現在地">📍</button>
+      <button class="rtab"        data-p="notify"   title="通知設定">🔔</button>
+    </div>
+
+    <!-- ── PAGE 1: 統計・株価 ── -->
+    <div class="rpage active" id="rp-stats">
+      <div class="rp-section">
+        <div class="s-title">SpaceX 統計</div>
+        <div class="stat-grid">
+          <div class="stat-cell">
+            <div class="s-num blue"   id="st-starlink">--</div>
+            <div class="s-lbl">Starlink衛星数</div>
+          </div>
+          <div class="stat-cell">
+            <div class="s-num green"  id="st-launches">--</div>
+            <div class="s-lbl">総打ち上げ数</div>
+          </div>
+          <div class="stat-cell">
+            <div class="s-num orange" id="st-rate">--%</div>
+            <div class="s-lbl">成功率</div>
+          </div>
+          <div class="stat-cell">
+            <div class="s-num purple" id="st-crew">--</div>
+            <div class="s-lbl">宇宙飛行士</div>
+          </div>
+        </div>
+      </div>
+      <div class="rp-section">
+        <div class="s-title">SPCX 株価 <span class="nasdaq-badge">NASDAQ</span></div>
+        <div class="stock-hdr">
+          <div>
+            <div class="stock-price" id="sp-price">$174.90</div>
+            <div class="stock-chg positive" id="sp-chg">▲ +$2.08 (+1.20%)</div>
+          </div>
+          <div class="stock-badge">上場 Jun 12</div>
+        </div>
+        <canvas id="price-chart" height="65"></canvas>
+        <div class="related-stocks">
+          <div class="rs-item"><span class="rs-sym">TSLA</span><span class="rs-val" id="rs-tsla">$312.40</span></div>
+          <div class="rs-item"><span class="rs-sym">RKLB</span><span class="rs-val" id="rs-rklb">--</span></div>
+          <div class="rs-item"><span class="rs-sym">ASTS</span><span class="rs-val" id="rs-asts">--</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── PAGE 2: 打ち上げ ── -->
+    <div class="rpage" id="rp-launches">
+      <div class="rp-section">
+        <div class="s-title">次の打ち上げ</div>
+        <div id="launches-list-r" class="launches-list">
+          <div class="skel"></div><div class="skel"></div><div class="skel"></div>
+        </div>
+      </div>
+      <div class="rp-section rp-scrollable">
+        <div class="s-title">最近の打ち上げ</div>
+        <div id="recent-list" class="recent-list">
+          <div class="skel"></div><div class="skel"></div><div class="skel"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── PAGE 3: クルー & Roadster ── -->
+    <div class="rpage" id="rp-crew">
+      <div class="rp-section">
+        <div class="s-title">🧑‍🚀 ISS 現在の乗組員</div>
+        <div class="section-desc">国際宇宙ステーション（ISS）に現在滞在している宇宙飛行士。多くは SpaceX の Crew Dragon で打ち上げられました。</div>
+        <div id="crew-list" class="crew-list">
+          <div class="skel"></div><div class="skel"></div>
+        </div>
+      </div>
+      <div class="rp-section">
+        <div class="s-title">
+          🚗 Tesla Roadster in Space
+          <span class="info-btn" onclick="toggleRoadsterInfo()" title="これは何？">?</span>
+        </div>
+        <div id="roadster-info" class="info-box hidden">
+          2018年2月6日、SpaceX の Falcon Heavy ロケット初打ち上げの際、イーロン・マスク自身の赤い Tesla Roadster が「ペイロード（荷物）」として宇宙へ打ち上げられました。現在も太陽を周回する軌道を飛行し続けており、運転席には宇宙服を着た人形「Starman」が乗っています。
+        </div>
+        <div id="roadster-card" class="roadster-big-card">
+          <div class="rd-loading">データ取得中...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── PAGE 4: ISS トラッカー ── -->
+    <div class="rpage" id="rp-iss">
+      <div class="rp-section">
+        <div class="s-title">🛸 ISS リアルタイム追跡</div>
+        <div class="iss-status" id="iss-status">
+          <div class="iss-icon">🛸</div>
+          <div class="iss-info">
+            <div class="iss-label">現在位置</div>
+            <div class="iss-coords" id="iss-coords">取得中...</div>
+          </div>
+        </div>
+        <div class="iss-stats-grid">
+          <div class="iss-stat"><div class="iss-sv" id="iss-lat">--</div><div class="iss-sl">緯度</div></div>
+          <div class="iss-stat"><div class="iss-sv" id="iss-lng">--</div><div class="iss-sl">経度</div></div>
+          <div class="iss-stat"><div class="iss-sv" id="iss-alt">--</div><div class="iss-sl">高度 (km)</div></div>
+          <div class="iss-stat"><div class="iss-sv" id="iss-spd">--</div><div class="iss-sl">速度 (km/h)</div></div>
+        </div>
+        <div class="rp-section" style="margin-top:8px">
+          <div class="s-title">乗組員数</div>
+          <div class="iss-crew-count" id="iss-crew-count">取得中...</div>
+        </div>
+        <button class="iss-globe-btn" onclick="GlobeManager.flyTo(parseFloat(document.getElementById('iss-lat').textContent)||0, parseFloat(document.getElementById('iss-lng').textContent)||0, 1.8)">
+          🌍 地球儀で追う
+        </button>
+      </div>
+    </div>
+
+    <!-- ── PAGE 5: 現在地 ── -->
+    <div class="rpage" id="rp-location">
+      <div class="rp-section">
+        <div class="s-title">📍 現在地モード</div>
+        <div id="loc-state" class="loc-prompt">
+          <p>位置情報を使って、あなたの頭上にある<br>Starlink 衛星数や ISS 通過時刻を表示します。</p>
+          <button class="loc-btn" onclick="RightPanel.requestLocation()">📍 位置情報を許可</button>
+        </div>
+        <div id="loc-data" style="display:none">
+          <div class="loc-info-grid">
+            <div class="loc-info-card">
+              <div class="lic-num blue" id="loc-starlink-count">--</div>
+              <div class="lic-label">頭上の Starlink</div>
+            </div>
+            <div class="loc-info-card">
+              <div class="lic-num green" id="loc-iss-dist">--</div>
+              <div class="lic-label">ISS まで (km)</div>
+            </div>
+          </div>
+          <div class="loc-detail">
+            <div class="s-title" style="margin-top:12px">現在地</div>
+            <div class="loc-addr" id="loc-addr">--</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 🛰 Starlink カバレッジ -->
+      <div class="rp-section">
+        <div class="s-title">🛰 Starlink カバレッジ</div>
+        <div class="section-desc">Starlink インターネットが利用可能な地域です。日本でも利用開始されています。</div>
+        <div class="coverage-grid">
+          <div class="cov-region">
+            <div class="cov-icon" style="color:var(--green)">✓</div>
+            <div class="cov-name">日本</div>
+            <div class="cov-status available">利用可能</div>
+          </div>
+          <div class="cov-region">
+            <div class="cov-icon" style="color:var(--green)">✓</div>
+            <div class="cov-name">北米・欧州</div>
+            <div class="cov-status available">利用可能</div>
+          </div>
+          <div class="cov-region">
+            <div class="cov-icon" style="color:var(--gold)">△</div>
+            <div class="cov-name">東南アジア</div>
+            <div class="cov-status partial">一部対応</div>
+          </div>
+          <div class="cov-region">
+            <div class="cov-icon" style="color:var(--red)">✗</div>
+            <div class="cov-name">中国・ロシア</div>
+            <div class="cov-status unavailable">未対応</div>
+          </div>
+        </div>
+        <div class="coverage-stats">
+          <div class="cs-item"><span class="cs-num">100+</span><span class="cs-lbl">対応国・地域</span></div>
+          <div class="cs-item"><span class="cs-num blue">6,800+</span><span class="cs-lbl">衛星数</span></div>
+          <div class="cs-item"><span class="cs-num green">~150ms</span><span class="cs-lbl">遅延</span></div>
+        </div>
+        <a class="cov-map-btn" href="https://www.starlink.com" target="_blank" rel="noopener noreferrer">
+          🛰 Starlink を使ってみる
+        </a>
+      </div>
+    </div>
+
+    <!-- ── PAGE 6: 通知設定 ── -->
+    <div class="rpage" id="rp-notify">
+      <div class="rp-section">
+        <div class="s-title">🔔 打ち上げ通知</div>
+        <div class="notify-desc">次の打ち上げ前にブラウザ通知を送ります。</div>
+        <div id="notify-perm-state">
+          <button class="notify-enable-btn" id="notify-btn" onclick="RightPanel.setupNotify()">
+            🔔 通知を有効にする
+          </button>
+        </div>
+        <div id="notify-settings" style="display:none">
+          <div class="s-title" style="margin-top:16px">通知タイミング</div>
+          <div class="notify-timing">
+            <label class="ntiming"><input type="checkbox" id="nt-30" checked> 30分前</label>
+            <label class="ntiming"><input type="checkbox" id="nt-10" checked> 10分前</label>
+            <label class="ntiming"><input type="checkbox" id="nt-5">  5分前</label>
+          </div>
+          <div class="s-title" style="margin-top:16px">次の通知予定</div>
+          <div id="notify-next" class="notify-next-list"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ── フッター（プライバシーポリシーリンク） ── -->
+<div class="site-footer">
+  <a href="/about.html" target="_blank">About</a>
+  <span>|</span>
+  <a href="/privacy.html" target="_blank">プライバシーポリシー</a>
+  <span>|</span>
+  <span>© 2026 SpaceX Live</span>
+  <span>|</span>
+  <a href="mailto:info@spacex-live.com">info@spacex-live.com</a>
+</div>
+
+<!-- ── モバイル用バックドロップ（パネル外タップで閉じる） ── -->
+<div id="mobile-backdrop" class="mobile-backdrop" onclick="closeMobilePanels()"></div>
+
+<!-- ── MOBILE BOTTOM NAV ── -->
+<div class="mobile-bottom-nav">
+  <button class="mob-tab active" onclick="mobileTab('left')"><span class="mob-icon">🚀</span>打上げ</button>
+  <button class="mob-tab" onclick="mobileTab('globe')"><span class="mob-icon">🌍</span>地球</button>
+  <button class="mob-tab" onclick="mobileTab('right')"><span class="mob-icon">📊</span>データ</button>
+</div>
+
+<!-- ── CDN ── -->
+<script src="https://cdn.jsdelivr.net/npm/globe.gl/dist/globe.gl.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+<!-- ── PWA サービスワーカー登録 ── -->
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .then(r => console.log('SW registered:', r.scope))
+      .catch(e => console.log('SW failed:', e));
+  });
+}
+</script>
+
+<!-- ── APP ── -->
+<script src="js/demo.js?v=27"></script>
+<script src="js/api.js?v=27"></script>
+<script src="js/globe.js?v=27"></script>
+<script src="js/ui.js?v=27"></script>
+<script src="js/panel.js?v=27"></script>
+<script src="js/main.js?v=27"></script>
+
+</body>
+</html>

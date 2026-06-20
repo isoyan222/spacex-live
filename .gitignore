@@ -1,0 +1,5 @@
+deploy.ps1
+deploy.bat
+.claude/
+node_modules/
+*.bat

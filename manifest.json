@@ -1,0 +1,28 @@
+{
+  "name": "SpaceX Live — リアルタイム宇宙ダッシュボード",
+  "short_name": "SpaceX Live",
+  "description": "Starlink・ISS・打ち上げをリアルタイムで追跡するSpaceXダッシュボード",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#020810",
+  "theme_color": "#020810",
+  "orientation": "any",
+  "lang": "ja",
+  "icons": [
+    {
+      "src": "textures/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "textures/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ],
+  "screenshots": [],
+  "categories": ["news", "productivity", "education"]
+}

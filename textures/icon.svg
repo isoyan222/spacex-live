@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192">
+  <rect width="192" height="192" rx="28" fill="#020810"/>
+  <rect width="192" height="192" rx="28" fill="url(#grad)"/>
+  <defs>
+    <radialGradient id="grad" cx="30%" cy="30%">
+      <stop offset="0%" stop-color="#0a1e40"/>
+      <stop offset="100%" stop-color="#020810"/>
+    </radialGradient>
+  </defs>
+  <!-- 地球 -->
+  <circle cx="96" cy="96" r="52" fill="#0a2040" stroke="#1a5080" stroke-width="2"/>
+  <ellipse cx="96" cy="96" rx="52" ry="18" fill="none" stroke="#1a6090" stroke-width="1.5" opacity="0.5"/>
+  <ellipse cx="96" cy="96" rx="18" ry="52" fill="none" stroke="#1a6090" stroke-width="1.5" opacity="0.5"/>
+  <!-- 大陸 -->
+  <ellipse cx="82" cy="80" rx="14" ry="10" fill="#1a4a28" opacity="0.9" transform="rotate(-20,82,80)"/>
+  <ellipse cx="108" cy="88" rx="18" ry="12" fill="#1a4a28" opacity="0.9" transform="rotate(15,108,88)"/>
+  <!-- 軌道ドット（Starlink） -->
+  <circle cx="96" cy="38" r="3.5" fill="#00bfff" opacity="0.9"/>
+  <circle cx="148" cy="96" r="3" fill="#00bfff" opacity="0.8"/>
+  <circle cx="96" cy="154" r="3.5" fill="#00bfff" opacity="0.9"/>
+  <circle cx="44" cy="96" r="3" fill="#00bfff" opacity="0.8"/>
+  <!-- 大気グロー -->
+  <circle cx="96" cy="96" r="54" fill="none" stroke="#2060b0" stroke-width="3" opacity="0.3"/>
+  <!-- SX テキスト -->
+  <text x="96" y="106" text-anchor="middle" fill="#00bfff" font-size="28" font-family="monospace" font-weight="bold" letter-spacing="2">SX</text>
+</svg>

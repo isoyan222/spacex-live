@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <!-- 宇宙の背景グラデーション -->
+    <linearGradient id="space" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"   stop-color="#010206"/>
+      <stop offset="60%"  stop-color="#020510"/>
+      <stop offset="100%" stop-color="#030d1e"/>
+    </linearGradient>
+    <!-- 地球表面 -->
+    <linearGradient id="surface" x1="0" y1="0" x2="0.3" y2="1">
+      <stop offset="0%"   stop-color="#0a1428"/>
+      <stop offset="50%"  stop-color="#071020"/>
+      <stop offset="100%" stop-color="#040c18"/>
+    </linearGradient>
+    <!-- 大気圏グロー -->
+    <linearGradient id="atmos" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"   stop-color="#1a6fc4" stop-opacity="0"/>
+      <stop offset="30%"  stop-color="#2a8fe8" stop-opacity="0.9"/>
+      <stop offset="55%"  stop-color="#4aaeff" stop-opacity="0.6"/>
+      <stop offset="80%"  stop-color="#1a5ab0" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#0a2a60" stop-opacity="0"/>
+    </linearGradient>
+    <!-- 地平線の輝き -->
+    <linearGradient id="horizon-glow" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"  stop-color="#6dd4ff" stop-opacity="0"/>
+      <stop offset="40%" stop-color="#8ae0ff" stop-opacity="0.95"/>
+      <stop offset="60%" stop-color="#5cc8ff" stop-opacity="0.7"/>
+      <stop offset="100%" stop-color="#2280cc" stop-opacity="0"/>
+    </linearGradient>
+    <clipPath id="frame">
+      <rect width="64" height="64" rx="12"/>
+    </clipPath>
+  </defs>
+
+  <!-- 角丸フレーム -->
+  <rect width="64" height="64" rx="12" fill="url(#space)"/>
+
+  <g clip-path="url(#frame)">
+    <!-- 星（宇宙エリア） -->
+    <circle cx="8"  cy="5"  r="0.4" fill="#fff" opacity="0.9"/>
+    <circle cx="18" cy="3"  r="0.3" fill="#fff" opacity="0.7"/>
+    <circle cx="28" cy="7"  r="0.35" fill="#fff" opacity="0.8"/>
+    <circle cx="38" cy="2"  r="0.25" fill="#fff" opacity="0.6"/>
+    <circle cx="48" cy="6"  r="0.4" fill="#fff" opacity="0.85"/>
+    <circle cx="55" cy="4"  r="0.3" fill="#fff" opacity="0.7"/>
+    <circle cx="12" cy="10" r="0.25" fill="#fff" opacity="0.5"/>
+    <circle cx="34" cy="11" r="0.3" fill="#fff" opacity="0.6"/>
+    <circle cx="52" cy="10" r="0.25" fill="#fff" opacity="0.55"/>
+    <circle cx="5"  cy="14" r="0.2" fill="#fff" opacity="0.45"/>
+    <circle cx="62" cy="8"  r="0.3" fill="#fff" opacity="0.6"/>
+    <circle cx="44" cy="14" r="0.2" fill="#fff" opacity="0.4"/>
+    <circle cx="22" cy="15" r="0.25" fill="#fff" opacity="0.5"/>
+
+    <!-- 地球本体（楕円で表現・下半分をおおう） -->
+    <ellipse cx="32" cy="82" rx="54" ry="52" fill="url(#surface)"/>
+
+    <!-- 大気圏グロー層（地平線付近） -->
+    <ellipse cx="32" cy="82" rx="54" ry="52"
+      fill="none" stroke="url(#atmos)" stroke-width="7"/>
+
+    <!-- 地平線の輝くライン -->
+    <ellipse cx="32" cy="82" rx="52.5" ry="50.8"
+      fill="none" stroke="url(#horizon-glow)" stroke-width="2.5"/>
+
+    <!-- 地平線の細い白いライン -->
+    <ellipse cx="32" cy="82" rx="51" ry="49.3"
+      fill="none" stroke="#aae8ff" stroke-width="0.5" opacity="0.5"/>
+
+    <!-- 都市の光（地球表面に散らばる） -->
+    <!-- 明るい都市クラスター -->
+    <circle cx="20" cy="40" r="1.2" fill="#ffd060" opacity="0.85"/>
+    <circle cx="23" cy="42" r="0.8" fill="#ffbe40" opacity="0.7"/>
+    <circle cx="18" cy="43" r="0.6" fill="#ffd060" opacity="0.6"/>
+    <circle cx="35" cy="38" r="1.0" fill="#ffcc50" opacity="0.8"/>
+    <circle cx="38" cy="36" r="0.7" fill="#ffd070" opacity="0.65"/>
+    <circle cx="33" cy="41" r="0.5" fill="#ffaa30" opacity="0.6"/>
+    <circle cx="48" cy="37" r="1.1" fill="#ffc840" opacity="0.75"/>
+    <circle cx="51" cy="39" r="0.6" fill="#ffd060" opacity="0.55"/>
+    <circle cx="12" cy="46" r="0.9" fill="#ffbb40" opacity="0.7"/>
+    <circle cx="15" cy="48" r="0.5" fill="#ffd060" opacity="0.55"/>
+    <circle cx="42" cy="43" r="0.7" fill="#ffcc50" opacity="0.6"/>
+    <circle cx="28" cy="45" r="0.5" fill="#ffaa30" opacity="0.5"/>
+    <circle cx="56" cy="40" r="0.8" fill="#ffcc50" opacity="0.65"/>
+    <circle cx="8"  cy="50" r="0.5" fill="#ffbb40" opacity="0.5"/>
+    <circle cx="60" cy="43" r="0.6" fill="#ffcc50" opacity="0.55"/>
+    <!-- 小さい散在する光 -->
+    <circle cx="25" cy="38" r="0.3" fill="#ffe080" opacity="0.45"/>
+    <circle cx="40" cy="40" r="0.3" fill="#ffd060" opacity="0.4"/>
+    <circle cx="30" cy="44" r="0.3" fill="#ffbb40" opacity="0.4"/>
+    <circle cx="50" cy="35" r="0.3" fill="#ffe090" opacity="0.45"/>
+    <circle cx="16" cy="36" r="0.3" fill="#ffd060" opacity="0.38"/>
+    <circle cx="44" cy="47" r="0.3" fill="#ffcc50" opacity="0.38"/>
+
+    <!-- 大気圏の薄い青いグロー（最前面） -->
+    <ellipse cx="32" cy="82" rx="54" ry="52"
+      fill="none" stroke="#3bbcff" stroke-width="3.5" opacity="0.12"/>
+  </g>
+</svg>
