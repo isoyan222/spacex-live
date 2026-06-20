@@ -11,15 +11,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: FTP Deploy
+      - name: SFTP Deploy
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          server-dir: /spacex-live.com/public_html/spacex.zip/
-          protocol: ftps
-          port: 21
+          server-dir: /home/xs771078/spacex-live.com/public_html/spacex.zip/
+          protocol: sftp
+          port: 10022
           dangerous-clean-slate: false
           exclude: |
             **/.git*
@@ -27,3 +27,4 @@ jobs:
             **/node_modules/**
             deploy.ps1
             deploy.bat
+            .gitignore
