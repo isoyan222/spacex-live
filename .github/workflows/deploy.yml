@@ -11,20 +11,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: SFTP Deploy
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+      - name: Deploy via SCP
+        uses: appleboy/scp-action@v0.1.7
         with:
-          server: ${{ secrets.FTP_SERVER }}
+          host: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          server-dir: /home/xs771078/spacex-live.com/public_html/spacex.zip/
-          protocol: sftp
           port: 10022
-          dangerous-clean-slate: false
-          exclude: |
-            **/.git*
-            **/.git*/**
-            **/node_modules/**
-            deploy.ps1
-            deploy.bat
-            .gitignore
+          source: "index.html,about.html,privacy.html,manifest.json,sitemap.xml,sw.js,favicon.jpg,favicon.svg,css/,js/,textures/"
+          target: /home/xs771078/spacex-live.com/public_html/spacex.zip/
+          overwrite: true
